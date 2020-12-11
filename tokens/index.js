@@ -1,25 +1,26 @@
 // https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
-const brandColors = {
-  mediumPurple: '#9879e9',
-  slateBlue: '#7559d1',
-  mandy: '#eb4e58',
-  whiteLilac: '#e8e8e8',
-  hintOfRed: '#f9f9f9',
-  romance: '#fcfdfd',
-  eastBay: '#455970',
-  regentGray: '#7e858c',
-  loblolly: '#b7b7b7',
-  blueMoon: '#eff1fd',
-}
 
 const choices = {
   color: {
-    brand: brandColors,
+    brand: {
+      slateBlue: '#7559d1',
+      mediumPurple: '#9879e9',
+      blueMoon: '#eff1fd',
+      amaranth: '#eb2d52',
+      mandy: '#eb4e58',
+      eastBay: '#455970',
+      regentGray: '#7e858c',
+      loblolly: '#b7b7b7',
+      whiteLilac: '#e8e8e8',
+      hintOfRed: '#f9f9f9',
+      romance: '#fcfdfd',
+    },
 
-    transparent: 'transparent',
-
-    black: '#000',
-    white: '#fff',
+    base: {
+      black: '#000',
+      white: '#fff',
+      transparent: 'transparent',
+    },
 
     gray: {
       100: '#f7fafc',
@@ -140,6 +141,7 @@ const choices = {
     lg: 40,
   },
   // https://getbootstrap.com/docs/4.5/layout/overview/#responsive-breakpoints
+  // FIXME: Custom properties can't be used in @media queries https://github.com/postcss/postcss-custom-media/blob/master/INSTALL.md#webpack
   mediaQuery: {
     minWidth: {
       sm: '576px',
@@ -156,7 +158,7 @@ const choices = {
   },
   fontFamily: {
     sans: ['Quicksand', 'Arial', 'sans-serif'],
-    mono: ['"Roboto Mono"', '"Courier New"', 'monospace'],
+    mono: ["'Roboto Mono'", "'Courier New'", 'monospace'],
   },
   fontSize: {
     base: '10px',
@@ -187,26 +189,29 @@ const choices = {
     loose: 2,
   },
   letterSpacing: {
-    tighter: '-.05em',
-    tight: '-.025em',
+    tighter: '-0.05em',
+    tight: '-0.025em',
     normal: '0',
-    wide: '.025em',
-    wider: '.05em',
-    widest: '.1em',
+    wide: '0.025em',
+    wider: '0.05em',
+    widest: '0.1em',
   },
   boxShadow: {
     none: 'none',
-    sm: `0px 4px 5px ${brandColors.whiteLilac}`,
+    xs: '0px 3px 6px rgba(0, 0, 0, 0.05)',
+    sm: '0px 4px 5px rgba(0, 0, 0, 0.07)',
   },
   borderRadius: {
     none: '0',
     sm: '10px',
+    md: '20px',
     lg: '30px',
     full: '9999px',
   },
   borderWidth: {
     none: '0',
-    default: '1px',
+    thin: '1px',
+    thick: '2px',
   },
   opacity: {
     0: '0',
@@ -229,25 +234,47 @@ const choices = {
 const decisions = {
   color: {
     primary: choices.color.brand.mediumPurple,
-    primaryHighlight: choices.color.brand.blueMoon,
     primaryMuted: choices.color.brand.slateBlue,
-    secondary: choices.color.brand.mandy,
+    primaryHighlight: choices.color.brand.blueMoon,
+    primaryInverted: choices.color.base.white,
     fontBase: choices.color.brand.eastBay,
-    fontHighlight: choices.color.brand.loblolly,
     fontMuted: choices.color.brand.regentGray,
+    fontHighlight: choices.color.brand.loblolly,
+    fontInverted: choices.color.base.white,
+    secondary: choices.color.brand.amaranth,
+    secondaryMuted: choices.color.brand.mandy,
+    secondaryInverted: choices.color.base.white,
   },
   backgroundColor: {
     primary: choices.color.brand.hintOfRed,
-    highlight: choices.color.brand.romance,
+    primaryHighlight: choices.color.brand.romance,
   },
   container: {
     maxWidth: '800px',
   },
   button: {
     maxWidth: '300px',
+    borderRadius: {
+      sm: choices.borderRadius.sm,
+      md: choices.borderRadius.md,
+      lg: choices.borderRadius.lg,
+    },
   },
   input: {
     height: '38px',
+    maxWidth: '400px',
+    background: choices.color.base.white,
+    borderRadius: choices.borderRadius.lg,
+    fontSize: choices.fontSize.sm,
+  },
+  picture: {
+    border: `${choices.borderWidth.thin} solid ${choices.color.gray[400]}`,
+  },
+  card: {
+    borderRadius: choices.borderRadius.sm,
+  },
+  task: {
+    borderRadius: choices.borderRadius.sm,
   },
 }
 

@@ -1,36 +1,40 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 
-import Horizontal from './Horizontal'
-import Vertical from './Vertical'
-import { getSize } from './helpers'
+import { Horizontal, Vertical } from './components'
 
 import styles from './Spacer.module.css'
+import { mapSize } from './helpers'
+import withStyles from '../../hocs/withStyles'
 
-const Spacer = ({ size, isVisible }) => (
+export const Spacer = ({ getStyles, size, isVisible }) => (
   <div
-    className={classNames(styles.spacer, {
-      [styles['is-visible']]: isVisible,
+    className={getStyles('spacer', {
+      'is-visible': isVisible,
     })}
     style={{
       display: 'inline-block',
-      width: getSize(size),
-      height: getSize(size),
+      width: mapSize(size),
+      height: mapSize(size),
     }}
   />
 )
 
-Spacer.defaultProps = {
-  size: 'none',
-}
-
 Spacer.propTypes = {
-  size: PropTypes.string,
+  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  getStyles: PropTypes.func.isRequired,
   isVisible: PropTypes.bool,
 }
 
-Spacer.Horizontal = Horizontal
-Spacer.Vertical = Vertical
+Spacer.defaultProps = {
+  size: 'none',
+  isVisible: false,
+  getStyles: () => {},
+}
 
-export default Spacer
+const SpacerWithStyles = withStyles(styles)(Spacer)
+
+SpacerWithStyles.Horizontal = Horizontal
+SpacerWithStyles.Vertical = Vertical
+
+export default SpacerWithStyles

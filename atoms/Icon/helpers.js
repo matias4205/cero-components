@@ -1,16 +1,17 @@
-const ICONS_ASSETS_PATH = '/icons'
-
-const iconMap = {
-  arrowRight: 'arrow-right',
-  angleDown: 'angle-down',
-}
-
 const iconSize = {
-  sm: 15,
-  md: 26,
-  lg: 30,
-  xl: 40,
+  sm: 25,
+  md: 35,
+  lg: 50,
+  xl: 70,
 }
 
-export const mapType = (type) => `${ICONS_ASSETS_PATH}/${iconMap[type]}.svg`
+const iconColor = {
+  base: '#ff0000',
+  highlight: '',
+  muted: '',
+  primary: '',
+}
+
+export const mapColor = (color) => iconColor[color]
+
 export const mapSize = (size) => iconSize[size]

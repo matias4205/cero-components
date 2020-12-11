@@ -1,23 +1,44 @@
 {
   "name": "@glrodasz/components",
-  "version": "0.0.0-development",
-  "private": false,
+  "version": "1.8.0",
   "description": "A components library to create apps from zero to production",
+  "private": false,
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/glrodasz/cero-components.git"
   },
+  "engines": {
+    "node": ">=15.0.0",
+    "yarn": ">=1.22.5"
+  },
   "scripts": {
-    "dev": "yarn storybook",
-    "test": "jest",
-    "lint": "yarn lint-js && yarn lint-css",
-    "lint-js": "eslint .",
-    "lint-css": "stylelint \"**/*.css\"",
-    "storybook": "start-storybook -p 6006 -s ./assets",
-    "build-tokens": "node ./scripts/build-tokens",
-    "build-storybook": "build-storybook -s ./assets",
-    "create-component": "node ./scripts/create-component"
+    "build:storybook": "build-storybook --no-dll",
+    "build:tokens": "node ./scripts/build-tokens",
+    "build": "run-s build:*",
+    "cc": "node ./scripts/create-component",
+    "commit": "cz",
+    "deploy:prod": "run-s build deploy:vercel:prod",
+    "deploy:stag": "run-s build deploy:vercel:stag",
+    "deploy:vercel:prod": "vercel --prod",
+    "deploy:vercel:stag": "vercel",
+    "dev:storybook": "start-storybook -p 6006",
+    "dev:tokens": "watch 'yarn build:tokens' ./tokens",
+    "dev": "concurrently 'npm:dev:*'",
+    "lint:css:fix": "yarn lint:css:prettier:fix && yarn lint:css:stylelint:fix",
+    "lint:css:prettier:fix": "yarn lint:css:prettier --write",
+    "lint:css:prettier": "prettier '**/*.css' --list-different --ignore-path .gitignore",
+    "lint:css:stylelint:fix": "yarn lint:css:stylelint --fix",
+    "lint:css:stylelint": "stylelint '**/*.css' --ignore-path .gitignore",
+    "lint:css": "run-s lint:css:stylelint lint:css:prettier",
+    "lint:fix": "run-p lint:js:fix lint:json:fix lint:css:fix ",
+    "lint:js:fix": "yarn lint:js --fix",
+    "lint:js": "eslint --cache --ignore-path .gitignore '**/*.js'",
+    "lint:json:fix": "yarn lint:json --write",
+    "lint:json": "prettier '**/*.json' --list-different --ignore-path .gitignore",
+    "lint": "run-p lint:js lint:json lint:css",
+    "test:watch": "CONSOLE_LEVEL=debug yarn test --watch",
+    "test": "jest"
   },
   "keywords": [
     "react",
@@ -29,14 +50,20 @@
     "@babel/core": "7.11.6",
     "@babel/preset-env": "7.11.5",
     "@babel/preset-react": "7.10.4",
-    "@storybook/addon-actions": "6.0.21",
-    "@storybook/addon-essentials": "6.0.21",
-    "@storybook/addon-links": "6.0.21",
-    "@storybook/addon-storyshots": "6.0.21",
-    "@storybook/react": "6.0.21",
+    "@commitlint/cli": "11.0.0",
+    "@commitlint/config-conventional": "11.0.0",
+    "@semantic-release/changelog": "5.0.1",
+    "@semantic-release/git": "9.0.0",
+    "@storybook/addon-actions": "6.0.28",
+    "@storybook/addon-essentials": "6.0.28",
+    "@storybook/addon-links": "6.0.28",
+    "@storybook/addon-storyshots": "6.0.28",
+    "@storybook/react": "6.0.28",
     "babel-jest": "26.3.0",
     "babel-loader": "8.1.0",
     "chromatic": "5.2.0",
+    "commitizen": "4.2.2",
+    "concurrently": "5.3.0",
     "enquirer": "2.3.6",
     "eslint": "7.8.1",
     "eslint-config-prettier": "6.11.0",
@@ -47,23 +74,19 @@
     "jest": "26.4.2",
     "lint-staged": "10.3.0",
     "minireset.css": "0.0.6",
+    "npm-run-all": "4.1.5",
     "prettier": "2.1.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "react-is": "16.13.1",
     "react-test-renderer": "16.13.1",
     "semantic-release": "17.1.2",
     "stylelint": "13.7.2",
-    "stylelint-config-prettier": "8.0.2",
-    "stylelint-prettier": "1.1.2"
+    "stylelint-config-idiomatic-order": "8.1.0",
+    "stylelint-config-recommended": "3.0.0",
+    "watch": "1.0.2"
   },
   "peerDependencies": {
-    "react": "^16.13.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn build-tokens && lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.js": "eslint --cache --fix"
+    "react": "16.13.1"
   }
 }

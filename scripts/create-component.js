@@ -1,57 +1,82 @@
 /* eslint-disable no-undef */
 const fs = require('fs').promises
+const path = require('path')
 const enquirer = require('enquirer')
 const toPascalCase = require('../utils/toPascalCase')
+const toKebabCase = require('../utils/toKebabCase')
+const toCapitalize = require('../utils/toCapitalize')
 
 const ATOMIC_DESIGN_TYPES = {
   atom: 'atoms',
   molecule: 'molecules',
   layout: 'layout',
 }
-
-function readComponentFile() {
-  return fs.readFile('./templates/component/Component.js', 'utf8')
-}
-
-function replaceComponentFile(componentFile, componentName) {
-  return componentFile.replace(/Component/g, componentName)
-}
+const COMPONENT_TEMPLATE_PATH = 'templates/component'
 
 function createComponentFolder(componentPath) {
   return fs.mkdir(componentPath, { recursive: true })
 }
 
-function createComponentFile(
-  componentPath,
-  componentName,
-  replacedComponentFile
-) {
-  return fs.writeFile(
-    `${componentPath}/${componentName}.js`,
-    replacedComponentFile,
+function readComponentFile(componentTemplate) {
+  return fs.readFile(
+    path.join(__dirname, `../${COMPONENT_TEMPLATE_PATH}/${componentTemplate}`),
     'utf8'
   )
 }
 
-async function createComponent(type, componentName) {
+function replaceComponentFile(
+  componentIsStory,
+  componentFile,
+  componentName,
+  mappedType
+) {
+  if (!componentIsStory) {
+    return componentFile
+      .replace(/component/g, toKebabCase(componentName))
+      .replace(/Component/g, componentName)
+  } else {
+    return componentFile
+      .replace(/Component/g, componentName)
+      .replace(/atomic/g, mappedType)
+      .replace(/Atomic/g, toCapitalize(mappedType))
+  }
+}
+
+function createComponentFile(componentPath, replacedComponentFile) {
+  return fs.writeFile(componentPath, replacedComponentFile, 'utf8')
+}
+
+async function createComponent(componentTemplates, type, componentName) {
   const mappedType = ATOMIC_DESIGN_TYPES[type]
-  const componentPath = `./${mappedType}/${componentName}`
+  const atomicComponentPath = path.join(
+    __dirname,
+    `../${mappedType}/${componentName}`
+  )
 
   try {
-    const componentFile = await readComponentFile()
-    const replacedComponentFile = await replaceComponentFile(
-      componentFile,
-      componentName
-    )
-    await createComponentFolder(componentPath)
+    await createComponentFolder(atomicComponentPath)
     console.log('🔧 component folder created!')
 
-    await createComponentFile(
-      componentPath,
-      componentName,
-      replacedComponentFile
-    )
-    console.log('🔧 component file created!')
+    for (const componentTemplate of componentTemplates) {
+      const componentTemplateRenamed = componentTemplate.replace(
+        /Component/g,
+        toPascalCase(componentName)
+      )
+      const componentIsStory = componentTemplate.search('stories') !== -1
+
+      const componentFile = await readComponentFile(componentTemplate)
+      const replacedComponentFile = await replaceComponentFile(
+        componentIsStory,
+        componentFile,
+        componentName,
+        mappedType
+      )
+      await createComponentFile(
+        path.join(atomicComponentPath, componentTemplateRenamed),
+        replacedComponentFile
+      )
+      console.log(`🔧 component file ${componentTemplateRenamed} created!`)
+    }
   } catch (error) {
     console.log(error)
     process.exit(1)
@@ -79,7 +104,24 @@ async function getPromptParams() {
     },
   })
 
-  createComponent(type, toPascalCase(componentName))
+  try {
+    const componentTemplates = await fs.readdir(
+      path.join(__dirname, `../${COMPONENT_TEMPLATE_PATH}`)
+    )
+
+    if (componentTemplates.length !== 0) {
+      createComponent(componentTemplates, type, toPascalCase(componentName))
+    } else {
+      throw new Error(
+        `There are not template files to create the component: ${toPascalCase(
+          componentName
+        )}`
+      )
+    }
+  } catch (error) {
+    console.log(error)
+    process.exit(1)
+  }
 }
 
 getPromptParams()

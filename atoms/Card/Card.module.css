@@ -1,38 +1,52 @@
 .card {
   display: flex;
-  align-items: center;
   width: 100%;
-  max-width: 320px;
-  border: 1px solid var(--color-transparent);
-  border-radius: var(--border-radius-sm);
+  align-items: center;
+  padding: 12px 10px;
+  border: var(--border-width-thin) solid var(--color-base-transparent);
+  border-radius: var(--card-border-radius);
   box-shadow: var(--box-shadow-sm);
-  padding: 6px 12px;
   color: var(--color-font-base);
+  transition: box-shadow 0.2s ease-in;
 }
 
 .size-sm {
-  height: 45px;
+  min-height: 45px;
 }
 
 .size-md {
-  height: 80px;
+  min-height: 80px;
 }
 
 .size-lg {
-  height: 115px;
+  min-height: 115px;
 }
 
 .color-primary {
   background: var(--color-primary);
-  color: var(--color-white);
+  color: var(--color-primary-inverted);
 }
 
 .color-secondary {
   background: var(--color-secondary);
-  color: var(--color-white);
+  color: var(--color-secondary-inverted);
 }
 
-.color-default {
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-300);
+.color-base {
+  border: var(--border-width-thin) solid var(--color-gray-300);
+  background: var(--color-primary-inverted);
+}
+
+.is-clickable {
+  cursor: pointer;
+}
+
+.is-draggable {
+  cursor: grab;
+  user-select: none;
+}
+
+.card.is-clickable:active,
+.card.is-draggable:active {
+  box-shadow: var(--box-shadow-xs);
 }
